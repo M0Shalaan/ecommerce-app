@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-
+const database = mongoose.connection;
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -21,6 +21,7 @@ const productSchema = new mongoose.Schema({
 });
 
 const Product = mongoose.model("Product", productSchema);
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -69,6 +70,10 @@ app.delete("/products/:id", async (req, res) => {
 });
 
 app.use("/uploads", express.static("uploads"));
+
+database.once("connected", () => {
+  console.log("Database Connected");
+});
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
