@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -5,10 +6,11 @@ const multer = require("multer");
 const path = require("path");
 const database = mongoose.connection;
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/ecommerce", {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -21,7 +23,6 @@ const productSchema = new mongoose.Schema({
 });
 
 const Product = mongoose.model("Product", productSchema);
-
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -75,6 +76,6 @@ database.once("connected", () => {
   console.log("Database Connected");
 });
 
-app.listen(5000, () => {
-  console.log("Server is running on port 5000");
+app.listen(process.env.PORT, () => {
+  console.log("Server is running on port ", process.env.PORT);
 });
